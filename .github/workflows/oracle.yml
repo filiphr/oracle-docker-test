@@ -1,0 +1,44 @@
+name: Oracle Build
+
+on:
+  push:
+
+
+jobs:
+  test_oracle:
+    name: Oracle ${{ matrix.oracle }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        oracle: [ "11-slim", "18" ]
+        include:
+          - oracle: 11-slim
+            driverVersion: 11.2.0.4
+            driverArtifact: ojdbc6
+            serviceName: XE
+          - oracle: 18
+            driverVersion: 18.3.0.0
+            driverArtifact: ojdbc8
+            serviceName: XEPDB1
+    services:
+      oracle:
+        image: gvenzl/oracle-xe:${{ matrix.oracle }}
+        env:
+          APP_USER: flowable
+          APP_USER_PASSWORD: flowable
+        ports:
+          - 1521/tcp
+        options: >-
+          --shm-size=2g
+          --health-cmd="\"\${ORACLE_BASE}/healthcheck.sh\" >/dev/null || exit 1"
+          --health-start-period 30s
+          --health-interval 30s
+          --health-timeout 40s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v2
+      - name: Test
+        run: >-
+          echo "test"
+
