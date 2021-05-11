@@ -31,7 +31,7 @@ jobs:
           - 1521/tcp
         options: >-
           --shm-size=2g
-          --health-cmd="\${ORACLE_BASE}/healthcheck.sh >/dev/null || exit 1"
+          --health-cmd="/u01/app/oracle/healthcheck.sh >/dev/null || exit 1"
           --health-start-period 30s
           --health-interval 30s
           --health-timeout 40s
